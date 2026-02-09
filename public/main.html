@@ -72,7 +72,7 @@
 
       function setBusy(isBusy) {
         sendBtn.disabled = isBusy;
-        statusEl.textContent = isBusy ? "LLM is busy..." : "";
+        statusEl.textContent = isBusy ? "Your request is being processed..." : "";
       }
 
       chatForm.addEventListener("submit", async (e) => {
