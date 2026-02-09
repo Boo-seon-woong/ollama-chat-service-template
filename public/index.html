@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{APP_NAME}} Login</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body class="landing">
+    <main class="landing-card auth-card">
+      <span class="landing-label">secure login</span>
+      <h1 class="landing-title">{{APP_NAME}}</h1>
+      <p class="landing-sub">login and start your chat</p>
+
+      <form id="loginForm" class="auth-form">
+        <label class="auth-label" for="email">Email</label>
+        <input class="auth-input" id="email" type="email" placeholder="you@example.com" required />
+
+        <label class="auth-label" for="password">Password</label>
+        <input class="auth-input" id="password" type="password" placeholder="PLACEHOLDER_SAMPLE" required />
+
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+
+      <p id="status" class="auth-status"></p>
+
+      <div class="landing-actions">
+        <button class="btn btn-secondary" onclick="location.href='/register'">register</button>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const statusEl = document.getElementById("status");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        statusEl.textContent = "trying to log in...";
+
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            statusEl.textContent = data.error || "login failed";
+            return;
+          }
+
+          location.href = "/chat";
+        } catch {
+          statusEl.textContent = "network error";
+        }
+      });
+    </script>
+  </body>
+</html>

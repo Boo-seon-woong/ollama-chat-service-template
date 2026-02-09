@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{APP_NAME}} Register</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body class="landing">
+    <main class="landing-card auth-card">
+      <span class="landing-label">email verification</span>
+      <h1 class="landing-title">register</h1>
+      <p class="landing-sub">After the registeration, you should click the email verification link to log in.</p>
+
+      <form id="registerForm" class="auth-form">
+        <label class="auth-label" for="email">Email</label>
+        <input class="auth-input" id="email" type="email" placeholder="you@example.com" required />
+
+        <label class="auth-label" for="password">Password</label>
+        <input class="auth-input" id="password" type="password" placeholder="PLACEHOLDER_SAMPLE" required />
+
+        <button class="btn btn-primary" type="submit">Send Verification Mail</button>
+      </form>
+
+      <p id="status" class="auth-status"></p>
+
+      <div class="landing-actions">
+        <button class="btn btn-secondary" onclick="location.href='/'">back to login</button>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById("registerForm");
+      const statusEl = document.getElementById("status");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        statusEl.textContent = "Sending verification email...";
+
+        try {
+          const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            statusEl.textContent = data.error || "registration failed";
+            return;
+          }
+
+          statusEl.textContent = "We've sent you a verification email. Please click the link in your inbox.";
+        } catch {
+          statusEl.textContent = "network error";
+        }
+      });
+    </script>
+  </body>
+</html>
